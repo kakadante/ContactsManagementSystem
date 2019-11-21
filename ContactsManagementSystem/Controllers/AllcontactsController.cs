@@ -48,7 +48,14 @@ namespace ContactsManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(allcontacts);
+                if (allcontacts.AllcontactsId == 0)
+                    _context.Add(allcontacts);
+
+                else
+                    _context.Update(allcontacts);
+
+
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -60,20 +67,29 @@ namespace ContactsManagementSystem.Controllers
         // GET: Allcontacts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var allcontacts = await _context.Allcontacts
-                .Include(a => a.Gender)
-                .FirstOrDefaultAsync(m => m.AllcontactsId == id);
-            if (allcontacts == null)
-            {
-                return NotFound();
-            }
+            var contact = await _context.Allcontacts.FindAsync(id);
 
-            return View(allcontacts);
+            _context.Allcontacts.Remove(contact);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var allcontacts = await _context.Allcontacts
+            //    .Include(a => a.Gender)
+            //    .FirstOrDefaultAsync(m => m.AllcontactsId == id);
+            //if (allcontacts == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(allcontacts);
         }
 
        
